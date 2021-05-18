@@ -45,6 +45,26 @@ catkin_make
 
 The node receiving pointcloud data is the `semantics_gen.py` script.
 
+### Run with Kitti
+
+First ensure you have the dataset structured as below:
+```
+dataset/
+    └── sequences/
+        └── 00/
+            ├── velodyne/
+            │   ├── 000000.bin
+            │   └── 000001.bin
+            ├── labels/
+            │   ├── 000000.label
+            │   └── 000001.label
+            └── poses.txt
+```
+
+**TODO:**
+- Add config for kitti 
+- Add instructions
+- Provide example folder
 
 ### Run semantic_mapping
 
