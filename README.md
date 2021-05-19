@@ -12,7 +12,7 @@ This package contains ROS nodes that are able to generate a labelled pointcloud 
 
 This work cannot be done without many open source projects. Special thanks to
 
-- [semantic_jaguar](https://github.com/floatlazer/semantic_jaguar), used as a template for octomap generation.
+- [semantic_slam](https://github.com/floatlazer/semantic_jaguar), used as a template for octomap generation.
 - [octomap](https://github.com/OctoMap/octomap), used as our map representation.
 - [pcl library](http://pointclouds.org/), used for point cloud processing.
 
