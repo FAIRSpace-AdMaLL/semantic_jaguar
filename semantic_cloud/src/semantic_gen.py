@@ -11,7 +11,6 @@ from std_msgs.msg import String
 import sensor_msgs
 from sensor_msgs.msg import Image, PointCloud2, PointField
 from cv_bridge import CvBridge, CvBridgeError
-import pypcd
 
 import tf_conversions
 import tf
@@ -26,8 +25,6 @@ from sensor_msgs.msg import PointCloud2
 import message_filters
 import time
 
-from skimage.transform import resize
-import cv2
 import os
 
 # TODO: Add transform
