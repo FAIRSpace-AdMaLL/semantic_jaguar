@@ -217,49 +217,42 @@ class SemanticGen:
 
     def generate_cloud(self, cloud, label, use_kitti=False):
 
-        self.cloud_ros = PointCloud2()
-
-        self.cloud_ros.fields.append(PointField(
-                            name = "x",
-                            offset = 0,
-                            datatype = PointField.FLOAT32, count = 1))
-        self.cloud_ros.fields.append(PointField(
+        fields = []
+        fields.append(PointField(
+             name = "x",
+             offset = 0,
+             datatype = PointField.FLOAT32, count = 1))
+        fields.append(PointField(
                             name = "y",
                             offset = 4,
                             datatype = PointField.FLOAT32, count = 1))
-        self.cloud_ros.fields.append(PointField(
-                            name = "z",
-                            offset = 8,
-                            datatype = PointField.FLOAT32, count = 1))
-        self.cloud_ros.fields.append(PointField(
-                            name = "intensity",
-                            offset = 12,
-                            datatype = PointField.FLOAT32, count = 1))
-        self.cloud_ros.fields.append(PointField(
-                            name = "semantic_color",
-                            offset = 16,
-                            datatype = PointField.FLOAT32, count = 1))
-        self.cloud_ros.fields.append(PointField(
+        fields.append(PointField(
+             name = "z",
+             offset = 8,
+             datatype = PointField.FLOAT32, count = 1))
+        fields.append(PointField(
+             name = "intensity",
+             offset = 12,
+             datatype = PointField.FLOAT32, count = 1))
+        fields.append(PointField(
+             name = "semantic_color",
+             offset = 16,
+             datatype = PointField.FLOAT32, count = 1))
+        fields.append(PointField(
                             name = "confidence",
                             offset = 24,
                             datatype = PointField.FLOAT32, count = 1))
 
-        
-        self.cloud_ros.header.frame_id = self.frame_id
-        self.cloud_ros.height = 1
-        self.cloud_ros.width = self.width*self.height
-
         if use_kitti:
             pass
 
-        self.cloud_ros.header.stamp = rospy.Time.now()
         header = rospy.Header()
         header.stamp = rospy.Time.now()
         header.frame_id = self.frame_id
 
 
         for i in range(len(self.sem_label)):
-            b,r,g = COLOR_MAP[str(self.sem_label[i])]
+            b,g,r = COLOR_MAP[str(self.sem_label[i])]
             fl_color = (r<<16) | (g<<8) | b            
             self.sem_label[i] = fl_color
 
@@ -268,7 +261,7 @@ class SemanticGen:
         scan_data[:,4] = self.sem_label
         scan_data[:,5] = np.ones(self.sem_label.shape)*0.6
 
-        cl = point_cloud2.create_cloud(header, self.cloud_ros.fields, scan_data)
+        cl = point_cloud2.create_cloud(header, fields, scan_data)
 
         return cl
 
@@ -342,8 +335,6 @@ if __name__=="__main__":
         print("waiting...")
         time.sleep(1)
     
-
-
     br = tf.TransformBroadcaster()
     listener = tf.TransformListener()
 
@@ -364,7 +355,6 @@ if __name__=="__main__":
         
 
         cl = n.generate_cloud(scan, label)
-
 
         cloud_pub.publish(cl)
         
