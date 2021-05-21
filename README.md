@@ -12,7 +12,7 @@ This package contains ROS nodes that are able to generate a labelled pointcloud 
 
 This work cannot be done without many open source projects. Special thanks to
 
-- [semantic_jaguar](https://github.com/floatlazer/semantic_jaguar), used as a template for octomap generation.
+- [semantic_slam](https://github.com/floatlazer/semantic_jaguar), used as a template for octomap generation.
 - [octomap](https://github.com/OctoMap/octomap), used as our map representation.
 - [pcl library](http://pointclouds.org/), used for point cloud processing.
 
@@ -45,6 +45,26 @@ catkin_make
 
 The node receiving pointcloud data is the `semantics_gen.py` script.
 
+### Run with Kitti
+
+First ensure you have the dataset structured as below:
+```
+dataset/
+    └── sequences/
+        └── 00/
+            ├── velodyne/
+            │   ├── 000000.bin
+            │   └── 000001.bin
+            ├── labels/
+            │   ├── 000000.label
+            │   └── 000001.label
+            └── poses.txt
+```
+
+**TODO:**
+- Add config for kitti 
+- Add instructions
+- Provide example folder
 
 ### Run semantic_mapping
 
