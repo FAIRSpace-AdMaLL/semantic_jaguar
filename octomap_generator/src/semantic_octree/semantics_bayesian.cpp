@@ -3,28 +3,22 @@
 #include <algorithm>
 
 #define ALPHA 0.8
-#define EPSILON 0.001
+//#define EPSILON 0.001
 
 namespace octomap
 {
-  // Struct ColorWithConfidence implementation -------------------------------------
-  std::ostream& operator<<(std::ostream& out, ColorWithConfidence const& c)
-  {
-    return out << '(' << c.color << ' ' << c.confidence << ')';
-  }
-
   // Struct SemanticsBayesian implementation  --------------------------------------
   SemanticsBayesian SemanticsBayesian::semanticFusion(const SemanticsBayesian s1, const SemanticsBayesian s2)
   {
     // Init colors vector with s1
-    std::vector<ColorWithConfidence> semantic_colors(NUM_SEMANTICS);
-    for(int i = 0; i < NUM_SEMANTICS; i++)
+    std::vector<ColorWithConfidence> semantic_colors(NUM_SEMANTICS_BAYESIAN);
+    for(int i = 0; i < NUM_SEMANTICS_BAYESIAN; i++)
     {
       semantic_colors[i] = s1.data[i];
     }
-    std::vector<float> confidences2(NUM_SEMANTICS);
+    std::vector<float> confidences2(NUM_SEMANTICS_BAYESIAN);
     float conf_others1 = 1., conf_others2 = 1.; // Probability for other unknown colors
-    for(int i = 0; i < NUM_SEMANTICS; i++)
+    for(int i = 0; i < NUM_SEMANTICS_BAYESIAN; i++)
     {
       conf_others1 -= s1.data[i].confidence;
       conf_others2 -= s2.data[i].confidence;
@@ -35,10 +29,10 @@ namespace octomap
     if(conf_others2 <= EPSILON)
       conf_others2 = EPSILON;
     // Complete confidences2 vector with s1
-    for(int i = 0; i < NUM_SEMANTICS; i++)
+    for(int i = 0; i < NUM_SEMANTICS_BAYESIAN; i++)
     {
       bool found = false;
-      for(int j = 0; j < NUM_SEMANTICS; j++)
+      for(int j = 0; j < NUM_SEMANTICS_BAYESIAN; j++)
       {
         // If current color is in s2, update confidences2 with confidence of s2
         if(semantic_colors[i].color == s2.data[j].color)
@@ -56,10 +50,10 @@ namespace octomap
       }
     }
     // Complete semantic_colors, confidences2 with s2
-    for(int i = 0; i < NUM_SEMANTICS; i++)
+    for(int i = 0; i < NUM_SEMANTICS_BAYESIAN; i++)
     {
       bool found = false;
-      for(int j = 0; j < NUM_SEMANTICS; j++)
+      for(int j = 0; j < NUM_SEMANTICS_BAYESIAN; j++)
       {
         if(s2.data[i].color == semantic_colors[j].color)
         {
@@ -91,10 +85,10 @@ namespace octomap
       if(semantic_colors[i].confidence < EPSILON)
         semantic_colors[i].confidence = EPSILON;
     }
-    // Keep top NUM_SEMANTICS colors and confidences
+    // Keep top NUM_SEMANTICS_BAYESIAN colors and confidences
     std::sort(semantic_colors.begin(), semantic_colors.end()); // Asc order sorting
     SemanticsBayesian ret;
-    for(int i = 0; i < NUM_SEMANTICS; i++)
+    for(int i = 0; i < NUM_SEMANTICS_BAYESIAN; i++)
     {
       ret.data[i] = semantic_colors[semantic_colors.size() - 1 - i]; // Take last elements
     }
@@ -103,9 +97,9 @@ namespace octomap
 
   std::ostream& operator<<(std::ostream& out, SemanticsBayesian const& s) {
     out << '(';
-    for(int i = 0; i < NUM_SEMANTICS - 1; i++)
+    for(int i = 0; i < NUM_SEMANTICS_BAYESIAN - 1; i++)
       out << s.data[i] << ' ';
-    out << s.data[NUM_SEMANTICS - 1];
+    out << s.data[NUM_SEMANTICS_BAYESIAN - 1];
     out << ')';
     return out;
   }

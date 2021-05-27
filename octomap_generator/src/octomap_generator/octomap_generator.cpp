@@ -167,18 +167,19 @@ void OctomapGenerator<PCLSemanticsJaguar, SemanticsOcTreeJaguar>::updateColorAnd
     if (!std::isnan(it->x) && !std::isnan(it->y) && !std::isnan(it->z))
     {
       // Get semantics
-      octomap::SemanticsJaguar sem;
-      uint32_t rgb;
-      std::memcpy(&rgb, &it->semantic_color, sizeof(uint32_t));
-      sem.semantic_color.r = (rgb >> 16) & 0x0000ff;
-      sem.semantic_color.g = (rgb >> 8) & 0x0000ff;
-      sem.semantic_color.b = (rgb)&0x0000ff;
-      sem.confidence = it->confidence;
-
-      octomap_.averageNodeColor(it->x, it->y, it->z, sem.semantic_color.r, sem.semantic_color.g, sem.semantic_color.b);
-
+      octomap::SemanticsJaguar sem(3);
+      for (int i = 0; i < 3; i++)
+      {
+        uint32_t rgb;
+        std::memcpy(&rgb, &it->data_sem[i], sizeof(uint32_t));
+        sem.data[i].color.r = (rgb >> 16) & 0x0000ff;
+        sem.data[i].color.g = (rgb >> 8) & 0x0000ff;
+        sem.data[i].color.b = (rgb)&0x0000ff;
+        sem.data[i].confidence = it->data_conf[i];
+      }
       octomap_.updateNodeSemantics(it->x, it->y, it->z, sem);
     }
+    
   }
   SemanticsOcTreeNodeJaguar *node = octomap_.search(pcl_cloud->begin()->x, pcl_cloud->begin()->y, pcl_cloud->begin()->z);
   //std::cout << "Example octree node: " << std::endl;

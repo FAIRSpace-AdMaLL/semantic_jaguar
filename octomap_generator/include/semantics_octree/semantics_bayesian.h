@@ -6,54 +6,21 @@
 #define SEMANTICS_BAYESIAN_H
 
 #include <octomap/ColorOcTree.h>
-#define NUM_SEMANTICS 3
+#include <semantics_octree/semantics_jaguar.h>
+#define NUM_SEMANTICS_BAYESIAN 3
 
 
 namespace octomap
 {
 
-  /// Structure of semantic color with confidence
-  struct ColorWithConfidence
-  {
-    ColorWithConfidence()
-    {
-      color = ColorOcTreeNode::Color(255,255,255);
-      confidence = 1.;
-    }
-    ColorWithConfidence(ColorOcTreeNode::Color col, float conf)
-    {
-      color = col;
-      confidence = conf;
-    }
-    ColorOcTreeNode::Color color;
-    float confidence;
-    inline bool operator==(const ColorWithConfidence& rhs) const
-    {
-        return color == rhs.color && confidence == rhs.confidence;
-    }
-    inline bool operator!=(const ColorWithConfidence& rhs) const
-    {
-        return color != rhs.color || confidence != rhs.confidence;
-    }
-    inline bool operator<(const ColorWithConfidence& rhs) const
-    {
-      return confidence < rhs.confidence;
-    }
-    inline bool operator>(const ColorWithConfidence& rhs) const
-    {
-      return confidence > rhs.confidence;
-    }
-  };
-
-  std::ostream& operator<<(std::ostream& out, ColorWithConfidence const& c);
   /// Structure contains semantic colors and their confidences
   struct SemanticsBayesian
   {
-    ColorWithConfidence data[NUM_SEMANTICS]; ///<Semantic colors and confidences, ordered by confidences
+    ColorWithConfidence data[NUM_SEMANTICS_BAYESIAN]; ///<Semantic colors and confidences, ordered by confidences
 
     SemanticsBayesian()
     {
-      for(int i = 0; i < NUM_SEMANTICS; i++)
+      for(int i = 0; i < NUM_SEMANTICS_BAYESIAN; i++)
       {
         data[i] = ColorWithConfidence();
       }
@@ -61,7 +28,7 @@ namespace octomap
 
     bool operator==(const SemanticsBayesian& rhs) const
     {
-        for(int i = 0; i < NUM_SEMANTICS; i++)
+        for(int i = 0; i < NUM_SEMANTICS_BAYESIAN; i++)
         {
           if(data[i] != rhs.data[i])
           {
@@ -84,7 +51,7 @@ namespace octomap
 
     bool isSemanticsSet() const
     {
-      for(int i = 0; i < NUM_SEMANTICS; i++)
+      for(int i = 0; i < NUM_SEMANTICS_BAYESIAN; i++)
       {
         if(data[i].color != ColorOcTreeNode::Color(255,255,255))
           return true;

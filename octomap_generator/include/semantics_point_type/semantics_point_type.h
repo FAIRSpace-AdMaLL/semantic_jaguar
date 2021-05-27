@@ -81,14 +81,28 @@ struct PointXYZISemanticsJaguar
   PCL_ADD_POINT4D; // Preferred way of adding a XYZ+padding
   PCL_ADD_INTENSITY;
 
-  union  // Semantic color
+  union  // Semantic colors
   {
-    float semantic_color;
+      float data_sem[4];
+      struct
+      {
+        float semantic_color1;
+        float semantic_color2;
+        float semantic_color3;
+      };
   };
   union  // Confidences
   {
-    float confidence;
+    float data_conf[4];
+    struct
+    {
+      float confidence1;
+      float confidence2;
+      float confidence3;
+    };
   };
+
+
   EIGEN_MAKE_ALIGNED_OPERATOR_NEW   // make sure our new allocators are aligned
 } EIGEN_ALIGN16;                    // enforce SSE padding for correct memory alignment
 
@@ -99,8 +113,13 @@ POINT_CLOUD_REGISTER_POINT_STRUCT (PointXYZISemanticsJaguar,
                                    (float, y, y)
                                    (float, z, z)
                                    (float, intensity, intensity)
-                                   (float, semantic_color, semantic_color)
-                                   (float, confidence, confidence)
+                                   (float, semantic_color1, semantic_color1)
+                                   (float, semantic_color2, semantic_color2)
+                                   (float, semantic_color3, semantic_color3)
+                                   (float, confidence1, confidence1)
+                                   (float, confidence2, confidence2)
+                                   (float, confidence3, confidence3)
+
 )
 
 #endif
