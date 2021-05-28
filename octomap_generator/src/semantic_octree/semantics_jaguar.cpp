@@ -2,6 +2,7 @@
 #include <vector>
 #include <algorithm>
 
+
 namespace octomap
 {
 
@@ -25,6 +26,8 @@ namespace octomap
   SemanticsJaguar SemanticsJaguar::semanticFusion(const SemanticsJaguar s1, const SemanticsJaguar s2)
   {
 
+    const float alpha = 1;
+
     // Init colors vector with s1
     std::vector<ColorWithConfidence> semantic_colors(NUM_SEMANTICS), s2_colors = s2.data;
     for (int i = 0; i < NUM_SEMANTICS; i++)
@@ -33,6 +36,15 @@ namespace octomap
     }
 
     std::sort(s2_colors.begin(), s2_colors.end()); // Asc order sorting
+
+    float s2_norm = l2_norm(s2_colors);
+
+    for(int i = 0; i < s2_colors.size(); i++){
+      s2_colors[i].confidence /= s2_norm;
+    }
+
+    float eps = (1 - sum(s2.data))/7; 
+    
 
     // Complete confidences2 vector with s1
     for (int i = 0; i < NUM_SEMANTICS; i++)
@@ -43,7 +55,8 @@ namespace octomap
         // If current color is in s2, update confidences2 with confidence of s2
         if (semantic_colors[i].color == s2_colors[s2_colors.size() - 1 - j].color)
         {
-          semantic_colors[i].confidence *= s2_colors[s2_colors.size() - 1 - j].confidence;
+          // propogate to instead of equals
+          semantic_colors[i].confidence *= s2_colors[s2_colors.size() - 1 - j].confidence * alpha;
           found = true;
           break;
         }
@@ -51,7 +64,7 @@ namespace octomap
       // If current color is not in s2, update confidence2 with alpha*conf_others2, also update conf_others2
       if (!found)
       {
-        semantic_colors[i].confidence *= EPSILON;
+        semantic_colors[i].confidence *= eps*alpha;
       }
     }
 
@@ -62,8 +75,8 @@ namespace octomap
     {
       semantic_colors[i].confidence /= norm;
       // If confidence is too small, set to epsilon to prevent confidence drop to zero
-      if (semantic_colors[i].confidence < EPSILON)
-        semantic_colors[i].confidence = EPSILON;
+      //if (semantic_colors[i].confidence < EPSILON)
+      //  semantic_colors[i].confidence = EPSILON;
     }
     // Keep top NUM_SEMANTICS colors and confidences
 

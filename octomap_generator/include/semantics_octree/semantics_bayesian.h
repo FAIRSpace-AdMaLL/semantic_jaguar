@@ -7,7 +7,7 @@
 
 #include <octomap/ColorOcTree.h>
 #include <semantics_octree/semantics_jaguar.h>
-#define NUM_SEMANTICS_BAYESIAN 3
+#define NUM_SEMANTICS_BAYESIAN 10
 
 
 namespace octomap

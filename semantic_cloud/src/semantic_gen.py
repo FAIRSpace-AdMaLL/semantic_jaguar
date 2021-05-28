@@ -218,16 +218,17 @@ class CloudGenerator:
 
         if self.cloud_type == "BAYES":
             if gen_noise:
-                noise = random.uniform(0, 0.3)
+                noise = random.uniform(0, 1)
+
             else:
                 noise = 0.15
 
             self.scan_data[:, 4] = labels[0]
             self.scan_data[:, 5] = labels[1]
             self.scan_data[:, 6] = labels[2]
-            self.scan_data[:, 7] = np.ones(labels[0].shape)*0.7
-            self.scan_data[:, 8] = np.ones(labels[0].shape)*noise
-            self.scan_data[:, 9] = np.ones(labels[0].shape)*(0.3-noise)
+            self.scan_data[:, 7] = np.random.uniform(0,1., labels[0].shape)+0.3  
+            self.scan_data[:, 8] = np.random.uniform(0,1., labels[0].shape)
+            self.scan_data[:, 9] = np.random.uniform(0,1., labels[0].shape)
         
         if self.cloud_type == "MAX":
             if gen_noise:
@@ -404,6 +405,7 @@ class SemanticGen:
 if __name__ == "__main__":
     rospy.init_node('sem_gen', anonymous=True)
 
+
     n = SemanticGen()
     print("Reading bin...")
 
@@ -421,7 +423,7 @@ if __name__ == "__main__":
 
     cloud_pub = rospy.Publisher("cloud_out", PointCloud2, queue_size=5)
     while cloud_pub.get_num_connections() < 1:
-        print("waiting...")
+        print("waiting for subscriber...")
         time.sleep(1)
 
     br = tf.TransformBroadcaster()
@@ -434,8 +436,6 @@ if __name__ == "__main__":
 
         t = tf.transformations.translation_from_matrix(pose)
         q = tf.transformations.quaternion_from_matrix(pose)
-
-        transform = tf.TransformerROS().fromTranslationRotation(t, q)
 
         br.sendTransform(t, q, rospy.Time.now(), "odom", "world")
 

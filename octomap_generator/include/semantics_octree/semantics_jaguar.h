@@ -46,6 +46,7 @@ namespace octomap
     {
       return confidence > rhs.confidence;
     }
+
   };
 
   std::ostream& operator<<(std::ostream& out, ColorWithConfidence const& c);
@@ -102,6 +103,14 @@ namespace octomap
           return true;
       }
       return false;
+    }
+
+    static float sum(std::vector<ColorWithConfidence> confs){
+      float s = 0;
+      for (auto v: confs){
+          s += v.confidence;
+      }
+      return s;
     }
 
     /// Perform bayesian fusion
