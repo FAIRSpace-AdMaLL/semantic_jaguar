@@ -212,17 +212,9 @@ class CloudGenerator:
         elif self.cloud_type == "MAX":
             self.scan_data = np.zeros((xyzi.shape[0], 6))
 
-
-        
         self.scan_data[:, 0:4] = xyzi
 
         if self.cloud_type == "BAYES":
-            if gen_noise:
-                noise = random.uniform(0, 1)
-
-            else:
-                noise = 0.15
-
             self.scan_data[:, 4] = labels[0]
             self.scan_data[:, 5] = labels[1]
             self.scan_data[:, 6] = labels[2]
@@ -231,12 +223,8 @@ class CloudGenerator:
             self.scan_data[:, 9] = np.random.uniform(0,1., labels[0].shape)
         
         if self.cloud_type == "MAX":
-            if gen_noise:
-                noise = random.uniform(0, 0.25)
-            else:
-                noise = 0
             self.scan_data[:, 4] = labels[0]
-            self.scan_data[:, 5] = np.ones(labels[0].shape)*(0.8-noise)
+            self.scan_data[:, 5] = np.random.uniform(0,1., labels[0].shape)+0.3  
 
 
 
