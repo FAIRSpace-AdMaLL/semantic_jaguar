@@ -3,3 +3,4 @@ semantic_cloud:
   cloud_topic: "/cloud_out"
   frame_id: "/odom"
   file_path: "/home/abbas/Downloads/06/"
+  point_type: 2

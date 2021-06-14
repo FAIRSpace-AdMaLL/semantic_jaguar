@@ -131,15 +131,11 @@ namespace octomap
 
 namespace semantic_pcl
 
-- color_image_topic
-  - Topic for input color image.
-- depth_image_topic
-  - Topic for input depth image.
+- cloud_topic
+  - Topic for output pointcloud.
 - point_type
-  - Point cloud type, should be same as octomap/tree_type. 0 for color point cloud, 1 for semantic point cloud including top 3 most confident semanic colors and their confidences, 2 for semantic including most confident semantic color and its confident. See project report for details of point cloud types.
+  - Point cloud type, should be same as octomap/tree_type. 0 for intensity point cloud, 2 for semantic point cloud including top 3 most confident semanic colors and their confidences, 1 for semantic including most confident semantic color and its confident.
 - frame_id
   - Point cloud frame id.
-- dataset
-  - Dataset on which PSPNet is trained. "ade20k" or "sunrgbd".
-- model_path
-  - Path to pytorch trained model.
+- file_path
+  - Path to the kitt semantic dataset folder.

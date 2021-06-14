@@ -29,6 +29,7 @@ import time
 import os
 
 from random import sample
+from enum import Enum
 
 # TODO: Add transform
 
@@ -103,6 +104,12 @@ COLOR_MAP = {  # bgr
     "257": [250, 80, 100],
     "258": [180, 30, 80],
     "259": [255, 0, 0]}
+
+class PointType(Enum):
+    INTENSITY=0
+    MAX=1
+    BAYES=2
+    
 
 
 def color_map(N=256, normalized=False):
@@ -408,6 +415,7 @@ if __name__ == "__main__":
     n.frame_id = rospy.get_param("/semantic_cloud/frame_id")
     cloud_topic = rospy.get_param("/semantic_cloud/cloud_topic")
 
+    point_type = PointType(rospy.get_param("/semantic_cloud/point_type"))
 
     bin_files = os.listdir(file_dir+"velodyne/")
     labels = os.listdir(file_dir+"labels/")
@@ -440,7 +448,7 @@ if __name__ == "__main__":
         scan = n.read_kitti_PCD(file_dir+"/velodyne/"+s)
         label = n.read_label(file_dir+"/labels/"+l)
 
-        cl = n.generate_cloud(scan, label, cloud_type="BAYES")
+        cl = n.generate_cloud(scan, label, cloud_type=point_type.name)
 
         cloud_pub.publish(cl)
 
