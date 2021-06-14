@@ -127,9 +127,7 @@ namespace octomap
   - Octomap saving path. (not tested)
 
 ### Parameters for semantic_cloud node (semantic_cloud.yaml)
-***Note this is still in progress***
-
-namespace semantic_pcl
+namespace semantic_cloud
 
 - cloud_topic
   - Topic for output pointcloud.
