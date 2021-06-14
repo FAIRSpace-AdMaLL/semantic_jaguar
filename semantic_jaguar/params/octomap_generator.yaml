@@ -10,4 +10,4 @@ octomap:
     prob_hit: 0.9
     prob_miss: 0.1
     save_path: "/home/abbas/semantic_ws/src/semantic_jaguar/maps/map.bt"
-    tree_type: 2 # 3 = Jaguar
+    tree_type: 3 # 3 = Jaguar

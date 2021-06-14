@@ -6,9 +6,8 @@
 #define SEMANTICS_JAGUAR_H
 
 #include <octomap/ColorOcTree.h>
-#define NUM_SEMANTICS 10
-#define EPSILON 0.01
-
+#define NUM_SEMANTICS 33
+#define EPSILON 0.001
 
 namespace octomap
 {
@@ -18,7 +17,7 @@ namespace octomap
   {
     ColorWithConfidence()
     {
-      color = ColorOcTreeNode::Color(255,255,255);
+      color = ColorOcTreeNode::Color(255, 255, 255);
       confidence = EPSILON;
     }
     ColorWithConfidence(ColorOcTreeNode::Color col, float conf)
@@ -30,64 +29,55 @@ namespace octomap
     ColorOcTreeNode::Color color;
     float confidence;
 
-    inline bool operator==(const ColorWithConfidence& rhs) const
+    inline bool operator==(const ColorWithConfidence &rhs) const
     {
-        return color == rhs.color && confidence == rhs.confidence;
+      return color == rhs.color && confidence == rhs.confidence;
     }
-    inline bool operator!=(const ColorWithConfidence& rhs) const
+    inline bool operator!=(const ColorWithConfidence &rhs) const
     {
-        return color != rhs.color || confidence != rhs.confidence;
+      return color != rhs.color || confidence != rhs.confidence;
     }
-    inline bool operator<(const ColorWithConfidence& rhs) const
+    inline bool operator<(const ColorWithConfidence &rhs) const
     {
       return confidence < rhs.confidence;
     }
-    inline bool operator>(const ColorWithConfidence& rhs) const
+    inline bool operator>(const ColorWithConfidence &rhs) const
     {
       return confidence > rhs.confidence;
     }
-
   };
 
-  std::ostream& operator<<(std::ostream& out, ColorWithConfidence const& c);
+  std::ostream &operator<<(std::ostream &out, ColorWithConfidence const &c);
   /// Structure contains semantic colors and their confidences
   struct SemanticsJaguar
   {
-    std::vector<ColorWithConfidence> data; ///<Semantic colors and confidences, ordered by confidences
+    ColorWithConfidence data [NUM_SEMANTICS]; ///<Semantic colors and confidences, ordered by confidences
+
+    int e_pos; /// index of the first empty color
 
     SemanticsJaguar()
     {
-      for(int i = 0; i < NUM_SEMANTICS; i++)
-      {
-        data.push_back(ColorWithConfidence());
-      }
-    }
-
-    SemanticsJaguar(int n)
-    {
-      data.resize(n);
-      for(int i = 0; i < n; i++)
-      {
+      for(int i = 0; i< NUM_SEMANTICS; i++)
         data[i] = ColorWithConfidence();
-      }
     }
 
-    bool operator==(const SemanticsJaguar& rhs) const
+
+    bool operator==(const SemanticsJaguar &rhs) const
     {
-        for(int i = 0; i < NUM_SEMANTICS; i++)
+      for (int i = 0; i < NUM_SEMANTICS; i++)
+      {
+        if (data[i] != rhs.data[i])
         {
-          if(data[i] != rhs.data[i])
-          {
-            return false;
-            break;
-          }
+          return false;
+          break;
         }
-        return true;
+      }
+      return true;
     }
 
-    bool operator!=(const SemanticsJaguar& rhs) const
+    bool operator!=(const SemanticsJaguar &rhs) const
     {
-        return !(*this == rhs);
+      return !(*this == rhs);
     }
 
     ColorOcTreeNode::Color getSemanticColor() const
@@ -97,18 +87,20 @@ namespace octomap
 
     bool isSemanticsSet() const
     {
-      for(int i = 0; i < NUM_SEMANTICS; i++)
+      for (int i = 0; i < NUM_SEMANTICS; i++)
       {
-        if(data[i].color != ColorOcTreeNode::Color(255,255,255))
+        if (data[i].color != ColorOcTreeNode::Color(255, 255, 255))
           return true;
       }
       return false;
     }
 
-    static float sum(std::vector<ColorWithConfidence> confs){
+    static float sum(std::vector<ColorWithConfidence> confs)
+    {
       float s = 0;
-      for (auto v: confs){
-          s += v.confidence;
+      for (auto v : confs)
+      {
+        s += v.confidence;
       }
       return s;
     }
@@ -117,6 +109,6 @@ namespace octomap
     static SemanticsJaguar semanticFusion(const SemanticsJaguar s1, const SemanticsJaguar s2);
   };
 
-  std::ostream& operator<<(std::ostream& out, SemanticsJaguar const& s);
+  std::ostream &operator<<(std::ostream &out, SemanticsJaguar const &s);
 }
 #endif //SEMANTICS_Jaguar_H

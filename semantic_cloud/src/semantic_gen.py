@@ -329,12 +329,18 @@ class SemanticGen:
             return random_label_2,random_label_3
 
     
-    def generate_cloud(self, cloud, label, use_kitti=False, cloud_type="BAYES"):
+    def generate_cloud(self, cloud, label, cloud_type="BAYES"):
+        """Generate a semantic cloud
+        
+        Params
+        -------
+        cloud (np.ndarray) : The cloud prototype
+        label (np.ndarray) : The labels of each point
+        cloud_type (str) : The type of semantic cloud to generate either "BAYES" or "MAX"
+        """
         
         c = CloudGenerator(cloud_type, self.frame_id)
 
-        if use_kitti:
-            pass
 
         random_label_2,random_label_3 = self.label_to_color(use_random=True)
 
@@ -397,7 +403,11 @@ if __name__ == "__main__":
     n = SemanticGen()
     print("Reading bin...")
 
-    file_dir = "/home/abbas/Downloads/06/"
+
+    file_dir = rospy.get_param("/semantic_cloud/file_path")
+    n.frame_id = rospy.get_param("/semantic_cloud/frame_id")
+    cloud_topic = rospy.get_param("/semantic_cloud/cloud_topic")
+
 
     bin_files = os.listdir(file_dir+"velodyne/")
     labels = os.listdir(file_dir+"labels/")
@@ -409,7 +419,7 @@ if __name__ == "__main__":
 
     calibration = n.parse_calibration(file_dir+"calib.txt")
 
-    cloud_pub = rospy.Publisher("cloud_out", PointCloud2, queue_size=5)
+    cloud_pub = rospy.Publisher(cloud_topic, PointCloud2, queue_size=5)
     while cloud_pub.get_num_connections() < 1:
         print("waiting for subscriber...")
         time.sleep(1)

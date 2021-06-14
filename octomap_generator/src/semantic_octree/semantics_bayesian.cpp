@@ -23,11 +23,13 @@ namespace octomap
       conf_others1 -= s1.data[i].confidence;
       conf_others2 -= s2.data[i].confidence;
     }
+
     // Keep a minimum value for others where they are small to be updatable
     if(conf_others1 <= EPSILON)
       conf_others1 = EPSILON;
     if(conf_others2 <= EPSILON)
       conf_others2 = EPSILON;
+
     // Complete confidences2 vector with s1
     for(int i = 0; i < NUM_SEMANTICS_BAYESIAN; i++)
     {
@@ -69,6 +71,8 @@ namespace octomap
         confidences2.push_back(s2.data[i].confidence); // Update confidences2
       }
     }
+
+
     // Now semantic_colors, confidences2 have the same size.
     // Perform bayesian fusion, save new confidences in semantic_colors
     float sum = conf_others1 * conf_others2;
@@ -85,6 +89,8 @@ namespace octomap
       if(semantic_colors[i].confidence < EPSILON)
         semantic_colors[i].confidence = EPSILON;
     }
+
+    
     // Keep top NUM_SEMANTICS_BAYESIAN colors and confidences
     std::sort(semantic_colors.begin(), semantic_colors.end()); // Asc order sorting
     SemanticsBayesian ret;

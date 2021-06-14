@@ -167,7 +167,7 @@ void OctomapGenerator<PCLSemanticsJaguar, SemanticsOcTreeJaguar>::updateColorAnd
     if (!std::isnan(it->x) && !std::isnan(it->y) && !std::isnan(it->z))
     {
       // Get semantics
-      octomap::SemanticsJaguar sem(3);
+      octomap::SemanticsJaguar sem;
       for (int i = 0; i < 3; i++)
       {
         uint32_t rgb;
