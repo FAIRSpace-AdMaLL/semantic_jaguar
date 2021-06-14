@@ -5,7 +5,7 @@ This package contains ROS nodes that are able to generate a labelled pointcloud 
 
 ## Semantic octomap
 ### Semantic KITTI - Sequence 06
-![alt text](docs/images/kitti_06.png)  
+![sample semantic map](docs/images/kitti_06.png)  
 
 
 ### Acknowledgement
@@ -48,6 +48,7 @@ The node receiving pointcloud data is the `semantics_gen.py` script.
 ### Run with Kitti
 
 First ensure you have the dataset structured as below:
+
 ```
 dataset/
     └── sequences/
@@ -60,6 +61,9 @@ dataset/
             │   └── 000001.label
             └── poses.txt
 ```
+
+The kitti labels contain 28 classes including classes distinguishing non-moving and moving objects:
+![kitti labels](docs/images/kitti-label_distribution.svg)
 
 **TODO:**
 - Add config for kitti 

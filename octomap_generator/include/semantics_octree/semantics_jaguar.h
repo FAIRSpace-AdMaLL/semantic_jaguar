@@ -6,6 +6,9 @@
 #define SEMANTICS_JAGUAR_H
 
 #include <octomap/ColorOcTree.h>
+#include <ros/ros.h>
+
+//TODO: Add params for this//document
 #define NUM_SEMANTICS 33
 #define EPSILON 0.001
 

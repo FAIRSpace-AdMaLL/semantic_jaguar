@@ -105,11 +105,11 @@ COLOR_MAP = {  # bgr
     "258": [180, 30, 80],
     "259": [255, 0, 0]}
 
+
 class PointType(Enum):
-    INTENSITY=0
-    MAX=1
-    BAYES=2
-    
+    INTENSITY = 0
+    MAX = 1
+    BAYES = 2
 
 
 def color_map(N=256, normalized=False):
@@ -193,7 +193,7 @@ class CloudGenerator:
                 name="confidence3",
                 offset=56,
                 datatype=PointField.FLOAT32, count=1))
-            
+
         if self.cloud_type == "MAX":
             self.fields.append(PointField(
                 name="semantic_color",
@@ -204,7 +204,6 @@ class CloudGenerator:
                 offset=36,
                 datatype=PointField.FLOAT32, count=1))
 
-
             return self.fields
 
     def gen_header(self):
@@ -212,7 +211,7 @@ class CloudGenerator:
         self.header.stamp = rospy.Time.now()
         self.header.frame_id = self.frame_id
         return self.header
-    
+
     def populate_scan(self, xyzi, labels, confidences, gen_noise=False):
         if self.cloud_type == "BAYES":
             self.scan_data = np.zeros((xyzi.shape[0], 10))
@@ -225,15 +224,14 @@ class CloudGenerator:
             self.scan_data[:, 4] = labels[0]
             self.scan_data[:, 5] = labels[1]
             self.scan_data[:, 6] = labels[2]
-            self.scan_data[:, 7] = np.random.uniform(0,1., labels[0].shape)+0.3  
-            self.scan_data[:, 8] = np.random.uniform(0,1., labels[0].shape)
-            self.scan_data[:, 9] = np.random.uniform(0,1., labels[0].shape)
-        
+            self.scan_data[:, 7] = np.random.uniform(
+                0, 1., labels[0].shape)+0.3
+            self.scan_data[:, 8] = np.random.uniform(0, 0.3, labels[0].shape)
+            self.scan_data[:, 9] = np.random.uniform(0, 0.3, labels[0].shape)
+
         if self.cloud_type == "MAX":
             self.scan_data[:, 4] = labels[0]
-            self.scan_data[:, 5] = np.random.uniform(0,1., labels[0].shape)+0.3  
-
-
+            self.scan_data[:, 5] = 0.9
 
     def generate_cloud(self):
         self.gen_header()
@@ -314,7 +312,7 @@ class SemanticGen:
     def sort_confidence(self):
         """Sort labels by confidence"""
         pass
-    
+
     def label_to_color(self, use_random=False):
         if use_random:
             random_label_2 = np.ones(self.sem_label.shape)
@@ -329,29 +327,30 @@ class SemanticGen:
             self.sem_label[i] = fl_color
 
             if use_random:
-                random_label_2[i] = gen_float_color(COLOR_MAP[random_sample[0]])
-                random_label_3[i] = gen_float_color(COLOR_MAP[random_sample[1]])
-        
-        if use_random:
-            return random_label_2,random_label_3
+                random_label_2[i] = gen_float_color(
+                    COLOR_MAP[random_sample[0]])
+                random_label_3[i] = gen_float_color(
+                    COLOR_MAP[random_sample[1]])
 
-    
+        if use_random:
+            return random_label_2, random_label_3
+
     def generate_cloud(self, cloud, label, cloud_type="BAYES"):
         """Generate a semantic cloud
-        
+
         Params
         -------
         cloud (np.ndarray) : The cloud prototype
         label (np.ndarray) : The labels of each point
         cloud_type (str) : The type of semantic cloud to generate either "BAYES" or "MAX"
         """
-        
+
         c = CloudGenerator(cloud_type, self.frame_id)
 
+        random_label_2, random_label_3 = self.label_to_color(use_random=True)
 
-        random_label_2,random_label_3 = self.label_to_color(use_random=True)
-
-        c.populate_scan(cloud, [self.sem_label, random_label_2, random_label_3], [], gen_noise=True)
+        c.populate_scan(
+            cloud, [self.sem_label, random_label_2, random_label_3], [], gen_noise=True)
 
         cl = c.generate_cloud()
 
@@ -406,10 +405,8 @@ class SemanticGen:
 if __name__ == "__main__":
     rospy.init_node('sem_gen', anonymous=True)
 
-
     n = SemanticGen()
     print("Reading bin...")
-
 
     file_dir = rospy.get_param("/semantic_cloud/file_path")
     n.frame_id = rospy.get_param("/semantic_cloud/frame_id")
